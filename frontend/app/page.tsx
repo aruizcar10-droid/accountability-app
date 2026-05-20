@@ -140,7 +140,6 @@ export default function Home() {
           return (
             <div key={i} style={{ border: abierta ? `2px solid ${color}` : '1px solid #e5e5e5', borderRadius: 12, background: '#fff' }}>
 
-              {/* Cabecera */}
               <div onClick={() => cargarDetalle(p)} style={{ padding: '1rem 1.25rem', cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{
@@ -164,7 +163,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Bloques desplegables */}
               {abierta && seleccionada && (
                 <div style={{ borderTop: '1px solid #f0f0f0', padding: '0.75rem 1.25rem 1rem' }}>
                   <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>Haz clic en un bloque para ver el detalle y las fuentes</p>
@@ -208,7 +206,6 @@ export default function Home() {
                                     background: e.tipo === 'positivo' ? '#f0fdf4' : '#fff5f5',
                                     border: `1px solid ${e.tipo === 'positivo' ? '#bbf7d0' : '#fecaca'}`
                                   }}>
-                                    {/* Descripción e impacto */}
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                                       <span style={{ fontSize: 13, color: '#333', flex: 1, lineHeight: 1.4 }}>{e.descripcion}</span>
                                       {e.impacto !== 0 && (
@@ -221,19 +218,14 @@ export default function Home() {
                                       )}
                                     </div>
 
-                                    {/* Fuente con fecha */}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                                       {e.fuente_nombre && (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                                           <span style={{ fontSize: 11 }}>{getFuenteIcon(e.tipo_fuente)}</span>
                                           {e.fuente_url ? (
-                                            <a
-                                              href={e.fuente_url}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
+                                            <a href={e.fuente_url} target="_blank" rel="noopener noreferrer"
                                               onClick={ev => ev.stopPropagation()}
-                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}
-                                            >
+                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}>
                                               {e.fuente_nombre} →
                                             </a>
                                           ) : (
@@ -241,22 +233,18 @@ export default function Home() {
                                           )}
                                           {e.fecha_dato && (
                                             <span style={{ fontSize: 10, color: '#aaa' }}>
-                                              · {formatFecha(e.fecha_dato)}
+                                              · Publicado: {formatFecha(e.fecha_dato)}
                                             </span>
                                           )}
                                         </div>
                                       )}
                                       {e.fuente_2_nombre && (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                                           <span style={{ fontSize: 11 }}>🔶</span>
                                           {e.fuente_2_url ? (
-                                            <a
-                                              href={e.fuente_2_url}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
+                                            <a href={e.fuente_2_url} target="_blank" rel="noopener noreferrer"
                                               onClick={ev => ev.stopPropagation()}
-                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}
-                                            >
+                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}>
                                               {e.fuente_2_nombre} →
                                             </a>
                                           ) : (
@@ -285,13 +273,12 @@ export default function Home() {
         })}
       </div>
 
-      {/* Leyenda */}
       <div style={{ marginTop: '2rem', padding: '1rem', background: '#f9f9f9', borderRadius: 8 }}>
         <p style={{ fontSize: 11, color: '#999', margin: 0 }}>
           ✅ Fuente oficial primaria (BOE, CENDOJ, Congreso, Tribunal Supremo) &nbsp;·&nbsp;
           🔵 Fuente oficial secundaria &nbsp;·&nbsp;
           🔶 Verificado por 2 fuentes independientes &nbsp;·&nbsp;
-          La fecha indica cuándo fue publicado el dato en la fuente oficial
+          ⏳ Pendiente de verificación
         </p>
       </div>
     </main>
