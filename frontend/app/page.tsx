@@ -19,9 +19,7 @@ interface Evidencia {
   descripcion: string
   impacto: number
   fuente_nombre: string
-  fuente_url: string
   fuente_2_nombre?: string
-  fuente_2_url?: string
   tipo_fuente: string
   estado_verificacion: string
   fecha_dato?: string
@@ -218,39 +216,14 @@ export default function Home() {
                                       )}
                                     </div>
 
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                                      {e.fuente_nombre && (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                                          <span style={{ fontSize: 11 }}>{getFuenteIcon(e.tipo_fuente)}</span>
-                                          {e.fuente_url ? (
-                                            <a href={e.fuente_url} target="_blank" rel="noopener noreferrer"
-                                              onClick={ev => ev.stopPropagation()}
-                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}>
-                                              {e.fuente_nombre} →
-                                            </a>
-                                          ) : (
-                                            <span style={{ fontSize: 11, color: '#888' }}>{e.fuente_nombre}</span>
-                                          )}
-                                          {e.fecha_dato && (
-                                            <span style={{ fontSize: 10, color: '#aaa' }}>
-                                              · Publicado: {formatFecha(e.fecha_dato)}
-                                            </span>
-                                          )}
-                                        </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                                      <span style={{ fontSize: 11 }}>{getFuenteIcon(e.tipo_fuente)}</span>
+                                      <span style={{ fontSize: 11, color: '#666', fontWeight: 500 }}>{e.fuente_nombre}</span>
+                                      {e.fecha_dato && (
+                                        <span style={{ fontSize: 10, color: '#aaa' }}>· {formatFecha(e.fecha_dato)}</span>
                                       )}
                                       {e.fuente_2_nombre && (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                                          <span style={{ fontSize: 11 }}>🔶</span>
-                                          {e.fuente_2_url ? (
-                                            <a href={e.fuente_2_url} target="_blank" rel="noopener noreferrer"
-                                              onClick={ev => ev.stopPropagation()}
-                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}>
-                                              {e.fuente_2_nombre} →
-                                            </a>
-                                          ) : (
-                                            <span style={{ fontSize: 11, color: '#888' }}>{e.fuente_2_nombre}</span>
-                                          )}
-                                        </div>
+                                        <span style={{ fontSize: 11, color: '#888' }}>· {e.fuente_2_nombre}</span>
                                       )}
                                     </div>
                                   </div>
@@ -275,7 +248,7 @@ export default function Home() {
 
       <div style={{ marginTop: '2rem', padding: '1rem', background: '#f9f9f9', borderRadius: 8 }}>
         <p style={{ fontSize: 11, color: '#999', margin: 0 }}>
-          ✅ Fuente oficial primaria (BOE, CENDOJ, Congreso, Tribunal Supremo) &nbsp;·&nbsp;
+          ✅ Fuente oficial primaria &nbsp;·&nbsp;
           🔵 Fuente oficial secundaria &nbsp;·&nbsp;
           🔶 Verificado por 2 fuentes independientes &nbsp;·&nbsp;
           ⏳ Pendiente de verificación
