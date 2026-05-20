@@ -24,6 +24,7 @@ interface Evidencia {
   fuente_2_url?: string
   tipo_fuente: string
   estado_verificacion: string
+  fecha_dato?: string
 }
 
 interface Persona {
@@ -49,10 +50,16 @@ function getLabel(score: number) {
 }
 
 function getFuenteIcon(tipo_fuente: string) {
-  if (tipo_fuente === 'oficial_primaria') return { icon: '✅', label: 'Fuente oficial primaria' }
-  if (tipo_fuente === 'oficial_secundaria') return { icon: '🔵', label: 'Fuente oficial' }
-  if (tipo_fuente === 'no_oficial_doble') return { icon: '🔶', label: 'Verificado por 2 fuentes' }
-  return { icon: '⏳', label: 'Pendiente de verificación' }
+  if (tipo_fuente === 'oficial_primaria') return '✅'
+  if (tipo_fuente === 'oficial_secundaria') return '🔵'
+  if (tipo_fuente === 'no_oficial_doble') return '🔶'
+  return '⏳'
+}
+
+function formatFecha(fecha?: string) {
+  if (!fecha) return null
+  const d = new Date(fecha)
+  return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
 const bloques = [
@@ -132,6 +139,8 @@ export default function Home() {
 
           return (
             <div key={i} style={{ border: abierta ? `2px solid ${color}` : '1px solid #e5e5e5', borderRadius: 12, background: '#fff' }}>
+
+              {/* Cabecera */}
               <div onClick={() => cargarDetalle(p)} style={{ padding: '1rem 1.25rem', cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{
@@ -155,6 +164,7 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Bloques desplegables */}
               {abierta && seleccionada && (
                 <div style={{ borderTop: '1px solid #f0f0f0', padding: '0.75rem 1.25rem 1rem' }}>
                   <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>Haz clic en un bloque para ver el detalle y las fuentes</p>
@@ -192,57 +202,71 @@ export default function Home() {
 
                             {evidenciasBloque.length > 0 ? (
                               <div>
-                                {evidenciasBloque.map((e, ei) => {
-                                  const fuenteInfo = getFuenteIcon(e.tipo_fuente)
-                                  return (
-                                    <div key={ei} style={{
-                                      marginBottom: 10, padding: '10px 12px', borderRadius: 8,
-                                      background: e.tipo === 'positivo' ? '#f0fdf4' : '#fff5f5',
-                                      border: `1px solid ${e.tipo === 'positivo' ? '#bbf7d0' : '#fecaca'}`
-                                    }}>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                                        <span style={{ fontSize: 13, color: '#333', flex: 1, lineHeight: 1.4 }}>{e.descripcion}</span>
+                                {evidenciasBloque.map((e, ei) => (
+                                  <div key={ei} style={{
+                                    marginBottom: 10, padding: '10px 12px', borderRadius: 8,
+                                    background: e.tipo === 'positivo' ? '#f0fdf4' : '#fff5f5',
+                                    border: `1px solid ${e.tipo === 'positivo' ? '#bbf7d0' : '#fecaca'}`
+                                  }}>
+                                    {/* Descripción e impacto */}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                                      <span style={{ fontSize: 13, color: '#333', flex: 1, lineHeight: 1.4 }}>{e.descripcion}</span>
+                                      {e.impacto !== 0 && (
                                         <span style={{
                                           fontSize: 12, fontWeight: 600, marginLeft: 10, flexShrink: 0,
                                           color: e.tipo === 'positivo' ? '#16a34a' : '#dc2626'
                                         }}>
                                           {e.tipo === 'positivo' ? '+' : ''}{e.impacto} pts
                                         </span>
-                                      </div>
-
-                                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                                        {e.fuente_nombre && (
-                                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                            <span style={{ fontSize: 11 }}>{fuenteInfo.icon}</span>
-                                            {e.fuente_url ? (
-                                              <a href={e.fuente_url} target="_blank" rel="noopener noreferrer"
-                                                onClick={ev => ev.stopPropagation()}
-                                                style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}>
-                                                {e.fuente_nombre} →
-                                              </a>
-                                            ) : (
-                                              <span style={{ fontSize: 11, color: '#888' }}>{e.fuente_nombre}</span>
-                                            )}
-                                          </div>
-                                        )}
-                                        {e.fuente_2_nombre && (
-                                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                            <span style={{ fontSize: 11 }}>🔶</span>
-                                            {e.fuente_2_url ? (
-                                              <a href={e.fuente_2_url} target="_blank" rel="noopener noreferrer"
-                                                onClick={ev => ev.stopPropagation()}
-                                                style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}>
-                                                {e.fuente_2_nombre} →
-                                              </a>
-                                            ) : (
-                                              <span style={{ fontSize: 11, color: '#888' }}>{e.fuente_2_nombre}</span>
-                                            )}
-                                          </div>
-                                        )}
-                                      </div>
+                                      )}
                                     </div>
-                                  )
-                                })}
+
+                                    {/* Fuente con fecha */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                      {e.fuente_nombre && (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                                          <span style={{ fontSize: 11 }}>{getFuenteIcon(e.tipo_fuente)}</span>
+                                          {e.fuente_url ? (
+                                            <a
+                                              href={e.fuente_url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              onClick={ev => ev.stopPropagation()}
+                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}
+                                            >
+                                              {e.fuente_nombre} →
+                                            </a>
+                                          ) : (
+                                            <span style={{ fontSize: 11, color: '#888' }}>{e.fuente_nombre}</span>
+                                          )}
+                                          {e.fecha_dato && (
+                                            <span style={{ fontSize: 10, color: '#aaa' }}>
+                                              · {formatFecha(e.fecha_dato)}
+                                            </span>
+                                          )}
+                                        </div>
+                                      )}
+                                      {e.fuente_2_nombre && (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                          <span style={{ fontSize: 11 }}>🔶</span>
+                                          {e.fuente_2_url ? (
+                                            <a
+                                              href={e.fuente_2_url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              onClick={ev => ev.stopPropagation()}
+                                              style={{ fontSize: 11, color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}
+                                            >
+                                              {e.fuente_2_nombre} →
+                                            </a>
+                                          ) : (
+                                            <span style={{ fontSize: 11, color: '#888' }}>{e.fuente_2_nombre}</span>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
                             ) : (
                               <p style={{ fontSize: 12, color: '#aaa', fontStyle: 'italic' }}>
@@ -261,11 +285,13 @@ export default function Home() {
         })}
       </div>
 
+      {/* Leyenda */}
       <div style={{ marginTop: '2rem', padding: '1rem', background: '#f9f9f9', borderRadius: 8 }}>
         <p style={{ fontSize: 11, color: '#999', margin: 0 }}>
           ✅ Fuente oficial primaria (BOE, CENDOJ, Congreso, Tribunal Supremo) &nbsp;·&nbsp;
           🔵 Fuente oficial secundaria &nbsp;·&nbsp;
-          🔶 Verificado por 2 fuentes independientes
+          🔶 Verificado por 2 fuentes independientes &nbsp;·&nbsp;
+          La fecha indica cuándo fue publicado el dato en la fuente oficial
         </p>
       </div>
     </main>
